@@ -1,0 +1,76 @@
+@page "/todo"
+@inject HttpClient client
+
+<div class="form-group">
+    <h2>Todos (@todos.Count(todo => !todo.Done))</h2>
+
+
+    @foreach (var todo in todos)
+    {
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" aria-label="Checkbox for following text input" checked="@todo.Done" bind-value="todo.Done" @onchange="@(e=> CheckChanged(e, todo))" />
+                </div>
+            </div>
+            <input class="form-control" aria-label="Text input with checkbox" @bind="todo.Message" @oninput="@(e=> OnMessageChanged(e, todo))" />
+        </div>
+    }
+
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Something todo" @bind="newTodo" @onkeyup="AddTodoByKeyUp" aria-label="" aria-describedby="button-addon2" />
+        <div class="input-group-append">
+            <button @onclick="AddTodo" class="btn btn-outline-secondary" type="button" id="button-addon2">Add todo</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+@code {
+    private IList<TodoItem> todos = new List<TodoItem>();
+    private string newTodo;
+    const string url = "http://localhost:3000/todo";
+
+    protected override async Task OnInitializedAsync()
+    {
+        todos = await client.GetJsonAsync<List<TodoItem>>(url);
+    }
+
+
+    private async Task AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            var item = await client.PostJsonAsync<TodoItem>(url, new TodoItem { Message = newTodo });
+
+            todos.Add(new TodoItem { Id = item.Id, Message = newTodo });
+            newTodo = string.Empty;
+        }
+    }
+
+    private async Task AddTodoByKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(newTodo))
+        {
+            var item = await client.PostJsonAsync<TodoItem>(url, new TodoItem { Message = newTodo });
+            todos.Add(new TodoItem { Id = item.Id, Message = newTodo });
+            newTodo = string.Empty;
+        }
+    }
+
+    private async Task CheckChanged(ChangeEventArgs e, TodoItem todoItem)
+    {
+        todoItem.Done = bool.Parse(e.Value.ToString());
+        await client.PutJsonAsync(url, todoItem);
+    }
+
+    private async Task OnMessageChanged(ChangeEventArgs e, TodoItem todoItem)
+    {
+        todoItem.Message = e.Value.ToString();
+        await client.PutJsonAsync(url, todoItem);
+    }
+
+}
