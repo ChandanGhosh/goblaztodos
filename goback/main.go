@@ -27,9 +27,9 @@ func main() {
 	config.AllowAllOrigins = true
 	r.Use(cors.New(config))
 
-	r.GET("/todo", handlers.GetAllTodoHandler)
-	r.POST("/todo", handlers.AddTodoHandler)
-	r.PUT("/todo", handlers.UpdateTodoHandler)
+	r.GET("/api/todo", handlers.GetAllTodoHandler)
+	r.POST("/api/todo", handlers.AddTodoHandler)
+	r.PUT("/api/todo", handlers.UpdateTodoHandler)
 	log.Panicln(r.Run(":3000"))
 
 }

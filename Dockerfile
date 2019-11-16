@@ -1,28 +1,11 @@
-# Start from the latest golang base image
-FROM golang:latest
-
-# Add Maintainer Info
-LABEL maintainer="chandan ghosh <ckghosh1983@gmail.com>"
-
-# Set the Current Working Directory inside the container
-WORKDIR /todoapp
-
-# Copy go mod and sum files
-COPY ./goback/go.mod ./
-COPY ./goback/go.sum ./
-
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
-RUN go mod download
-
-# Copy the source from the current directory to the Working Directory inside the container
-COPY ./goback ./
-COPY ./dist ./dist
-
-# Build the Go app
-RUN go build -o main .
-
-# Expose port 8080 to the outside world
-EXPOSE 8080
-
-# Command to run the executable
+FROM golang:alpine as builder
+RUN mkdir /build 
+ADD . /build/
+WORKDIR /build/goback 
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o /build/main .
+WORKDIR /build
+FROM scratch
+COPY --from=builder /build/main /app/
+COPY --from=builder /build/dist /app/dist
+WORKDIR /app
 CMD ["./main"]
