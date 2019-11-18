@@ -7,5 +7,6 @@ WORKDIR /build
 FROM scratch
 COPY --from=builder /build/main /app/
 COPY --from=builder /build/dist /app/dist
+EXPOSE 3000
 WORKDIR /app
 CMD ["./main"]
