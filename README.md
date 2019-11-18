@@ -1,6 +1,7 @@
 # goblaztodos
 
 A todo app using Go backend and C# blazor wasm frontend
+Wanna see the site? Check this: https://goblaztodos.azurewebsites.net/todo
 
 # Pre-reqs
 
