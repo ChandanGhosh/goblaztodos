@@ -30,7 +30,7 @@ jobs:
       run: |
         echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USER --password-stdin
     # Runs a set of commands using the runners shell
-    - name: build Nifi Docker image
+    - name: build Docker image
       run: |
         docker build --rm -f Dockerfile -t chandanghosh/goblazortodosample .
         
