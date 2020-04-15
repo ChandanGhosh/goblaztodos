@@ -17,9 +17,9 @@ func main() {
 		dir, file := filepath.Split(c.Request.RequestURI)
 		fileExt := filepath.Ext(file)
 		if file == "" || fileExt == "" {
-			c.File("./dist/blazfront/dist/index.html")
+			c.File("./dist/wwwroot/index.html")
 		} else {
-			c.File("./dist/blazfront/dist/" + path.Join(dir, file))
+			c.File("./dist/wwwroot/" + path.Join(dir, file))
 		}
 
 	})

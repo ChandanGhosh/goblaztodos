@@ -7,6 +7,9 @@
 *.ipr
 .idea/
 
+# app binaries
+app
+goback
 
 # dep vendor
 vendor/
